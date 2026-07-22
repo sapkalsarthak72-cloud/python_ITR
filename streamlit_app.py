@@ -1,15 +1,21 @@
 import streamlit as st 
 import pandas as pd
 import numpy as np
-import joblib as jb
 import pickle
 from PIL import Image
 import plotly.graph_objects as go
 import plotly.express as px
-from pathlib import Path
 
-base_dir = Path(__file__).resolve().parent
-session20_dir = base_dir.parent / "session20"
+
+import pathlib
+import joblib as jb
+
+def load_model():
+    base_dir = pathlib.Path(__file__).parent  # current directory
+    model = jb.load(base_dir / "LR_ford_car.pkl")
+    scaler = jb.load(base_dir / "scaler.pkl")
+    columns = jb.load(base_dir / "columns.pkl")
+    return model, scaler, columns
 
 # Set page config
 st.set_page_config(
@@ -60,12 +66,7 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 # Load model and artifacts
-@st.cache_resource
-def load_model():
-    model = jb.load(session20_dir / "LR_ford_car.pkl")
-    scaler = jb.load(session20_dir / "scaler.pkl")
-    columns = jb.load(session20_dir / "columns.pkl")
-    return model, scaler, columns
+
 
 model, scaler, columns = load_model()
 
